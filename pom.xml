@@ -1,0 +1,122 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+        
+    <groupId>com.sf.plugins</groupId>
+    <artifactId>template-extractor</artifactId>
+    <version>1.0.0-SNAPSHOT</version>
+    <name>Biometric Template Extractor</name>
+    <description>Plugin project which allows Seamfix applications extract templates from images for biometric purposes</description>
+
+    <properties>
+        <endorsed.dir>${project.build.directory}/endorsed</endorsed.dir>
+        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+    </properties>
+
+    <dependencies>
+		
+        <dependency>
+            <groupId>com.neurotec</groupId>
+            <artifactId>neurotec-biometrics-client</artifactId>
+            <version>10.0.0.0</version>
+            <scope>provided</scope>
+        </dependency>
+        <dependency>
+            <groupId>com.neurotec</groupId>
+            <artifactId>neurotec-biometrics-gui</artifactId>
+            <version>10.0.0.0</version>
+            <scope>provided</scope>
+        </dependency>
+        <dependency>
+            <groupId>com.neurotec</groupId>
+            <artifactId>neurotec-devices</artifactId>
+            <version>10.0.0.0</version>
+            <scope>provided</scope>
+        </dependency>
+        <dependency>
+            <groupId>com.neurotec</groupId>
+            <artifactId>neurotec-licensing</artifactId>
+            <version>10.0.0.0</version>
+            <scope>provided</scope>
+        </dependency>
+        <dependency>
+            <groupId>com.neurotec</groupId>
+            <artifactId>neurotec-cluster</artifactId>
+            <version>10.0.0.0</version>
+            <scope>provided</scope>
+        </dependency>
+        <dependency>
+            <groupId>com.neurotec</groupId>
+            <artifactId>neurotec-devices-virtual</artifactId>
+            <version>10.0.0.0</version> 
+            <scope>provided</scope>
+        </dependency>
+        <dependency>
+            <groupId>com.neurotec</groupId>
+            <artifactId>neurotec-core</artifactId>
+            <version>10.0.0.0</version>
+            <scope>provided</scope>
+        </dependency>
+        <dependency>
+            <groupId>net.java.dev.jna</groupId>
+            <artifactId>jna</artifactId>
+            <version>4.5.0</version>
+            <scope>provided</scope>
+        </dependency>
+        <dependency>
+            <groupId>com.neurotec</groupId>
+            <artifactId>neurotec-gui</artifactId>
+            <version>10.0.0.0</version>
+            <scope>provided</scope>
+        </dependency>
+        <dependency>
+            <groupId>com.neurotec</groupId>
+            <artifactId>neurotec-media</artifactId>
+            <version>10.0.0.0</version>
+            <scope>provided</scope>
+        </dependency>
+        <dependency>
+            <groupId>com.neurotec</groupId>
+            <artifactId>neurotec-media-processing</artifactId>
+            <version>10.0.0.0</version>
+            <scope>provided</scope>
+        </dependency>
+        <dependency>
+            <groupId>com.neurotec</groupId>
+            <artifactId>neurotec-biometrics</artifactId>
+            <version>10.0.0.0</version>
+            <scope>provided</scope>
+        </dependency>
+    </dependencies>
+
+    <build>
+        <finalName>template-extractor</finalName>
+        <plugins>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-compiler-plugin</artifactId>
+                <version>3.1</version>
+                <configuration>
+                    <source>1.8</source>
+                    <target>1.8</target>
+                    <compilerArguments>
+                        <endorseddirs>${endorsed.dir}</endorseddirs>
+                    </compilerArguments>
+                </configuration>
+            </plugin>
+        </plugins>
+    </build>
+    <distributionManagement>
+        <repository>
+            <id>deployment</id>
+            <name>Internal Releases</name>
+            <url>http://singlewindow.seamfix.com:7997/nexus/content/repositories/releases</url>
+        </repository>
+        <snapshotRepository>
+            <id>deployment</id>
+            <name>Internal Releases</name>
+            <url>http://singlewindow.seamfix.com:7997/nexus/content/repositories/snapshots</url>
+        </snapshotRepository>
+    </distributionManagement>
+
+</project>
