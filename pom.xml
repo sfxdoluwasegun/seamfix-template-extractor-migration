@@ -47,12 +47,6 @@
         </dependency>
         <dependency>
             <groupId>com.neurotec</groupId>
-            <artifactId>neurotec-devices-virtual</artifactId>
-            <version>10.0.0.0</version> 
-            <scope>provided</scope>
-        </dependency>
-        <dependency>
-            <groupId>com.neurotec</groupId>
             <artifactId>neurotec-core</artifactId>
             <version>10.0.0.0</version>
             <scope>provided</scope>
