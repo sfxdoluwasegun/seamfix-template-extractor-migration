@@ -15,7 +15,6 @@ import com.neurotec.io.NBuffer;
 import com.sf.plugins.template.extractor.enums.BiometricType;
 import com.sf.plugins.template.extractor.enums.ResponseCodeEnum;
 import com.sf.plugins.template.extractor.pojos.ExtractResponse;
-import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -90,23 +89,26 @@ public class Extractor implements IExtractor {
             info = (WSQInfo) NImageFormat.getWSQ().createInfo(image);
             float bitrate = WSQInfo.DEFAULT_BIT_RATE;
             info.setBitRate(bitrate);
-                        path = Files.createTempFile("fingerprint", ".wsq");
+            path = Files.createTempFile("fingerprint", ".wsq");
             String pat = path.toString();
             image.save(pat, info);
+          
             byte[] wsqByte = Files.readAllBytes(path);
             wsqBase64String = Base64.getEncoder().encodeToString(wsqByte);
             if (wsqBase64String == null || wsqBase64String.trim().isEmpty()) {
                 return null;
             }
+
         } catch (Exception ex) {
             log.log(Level.SEVERE, ex.getMessage());
             return null;
-        } finally {
+        }
+        finally {
             try {
                 Files.deleteIfExists(path);
                 Files.delete(path);
             } catch (IOException ex) {
-                log.log(Level.SEVERE, wsqBase64String);
+                log.log(Level.SEVERE, ex.getMessage());
             }
 
         }
