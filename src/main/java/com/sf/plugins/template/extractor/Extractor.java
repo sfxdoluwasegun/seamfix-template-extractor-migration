@@ -12,9 +12,11 @@ import com.neurotec.images.NImage;
 import com.neurotec.images.NImageFormat;
 import com.neurotec.images.WSQInfo;
 import com.neurotec.io.NBuffer;
+import com.neurotec.io.NStream;
 import com.sf.plugins.template.extractor.enums.BiometricType;
 import com.sf.plugins.template.extractor.enums.ResponseCodeEnum;
 import com.sf.plugins.template.extractor.pojos.ExtractResponse;
+import java.io.ByteArrayOutputStream;
 import java.util.Base64;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -32,11 +34,11 @@ public class Extractor implements IExtractor {
         //validate inputs
         ExtractResponse response = new ExtractResponse(ResponseCodeEnum.ERROR);
         if (base64ImageString == null || biometricType == null) {
-            log.log(Level.SEVERE, ResponseCodeEnum.INVALID_INPUT.getDescription()+" : Invalid image or Biomtric Type ");
+            log.log(Level.SEVERE, ResponseCodeEnum.INVALID_INPUT.getDescription() + " : Invalid image or Biomtric Type ");
             return new ExtractResponse(ResponseCodeEnum.INVALID_INPUT);
         }
         if (BiometricType.from(biometricType) == BiometricType.FINGER) {
-             log.info("Beginning Finger Image Template Extraction");
+            log.info("Beginning Finger Image Template Extraction");
             byte[] templateByte = extractFingerTemplate(biometricType, null, base64ImageString, client);
             if (templateByte != null) {
                 response = new ExtractResponse(ResponseCodeEnum.SUCCESS);
@@ -73,4 +75,29 @@ public class Extractor implements IExtractor {
         }
         return templateByte;
     }
+
+    public String toWsq(String base64ImageString) {
+        String wsqBase64String = null;
+        try {
+            String bmpStr = base64ImageString.replaceAll("\\s+", "");
+            byte[] bmpBytes = Base64.getDecoder().decode(bmpStr);
+            NImage image = null;
+            WSQInfo info = null;
+            NStream stream = null;
+            image = NImage.fromMemory(new NBuffer(bmpBytes));
+            info = (WSQInfo) NImageFormat.getWSQ().createInfo(image);
+            float bitrate = WSQInfo.DEFAULT_BIT_RATE;
+            info.setBitRate(bitrate);
+            image.save(stream, info);
+            byte[] wsqByte = ((ByteArrayOutputStream) stream.asOutputStream()).toByteArray();
+            wsqBase64String = Base64.getEncoder().encodeToString(wsqByte);
+            if (wsqBase64String == null || wsqBase64String.trim().isEmpty()) {
+                return null;
+            }
+        } catch (Exception ex) {
+            return null;
+        }
+        return wsqBase64String;
+    }
+
 }
