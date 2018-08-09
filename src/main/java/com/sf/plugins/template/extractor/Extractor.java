@@ -12,11 +12,13 @@ import com.neurotec.images.NImage;
 import com.neurotec.images.NImageFormat;
 import com.neurotec.images.WSQInfo;
 import com.neurotec.io.NBuffer;
-import com.neurotec.io.NStream;
 import com.sf.plugins.template.extractor.enums.BiometricType;
 import com.sf.plugins.template.extractor.enums.ResponseCodeEnum;
 import com.sf.plugins.template.extractor.pojos.ExtractResponse;
 import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
 import java.util.Base64;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -78,25 +80,37 @@ public class Extractor implements IExtractor {
 
     public String toWsq(String base64ImageString) {
         String wsqBase64String = null;
+        Path path = null;
         try {
             String bmpStr = base64ImageString.replaceAll("\\s+", "");
             byte[] bmpBytes = Base64.getDecoder().decode(bmpStr);
             NImage image = null;
             WSQInfo info = null;
-            NStream stream = null;
             image = NImage.fromMemory(new NBuffer(bmpBytes));
             info = (WSQInfo) NImageFormat.getWSQ().createInfo(image);
             float bitrate = WSQInfo.DEFAULT_BIT_RATE;
             info.setBitRate(bitrate);
-            image.save(stream, info);
-            byte[] wsqByte = ((ByteArrayOutputStream) stream.asOutputStream()).toByteArray();
+                        path = Files.createTempFile("fingerprint", ".wsq");
+            String pat = path.toString();
+            image.save(pat, info);
+            byte[] wsqByte = Files.readAllBytes(path);
             wsqBase64String = Base64.getEncoder().encodeToString(wsqByte);
             if (wsqBase64String == null || wsqBase64String.trim().isEmpty()) {
                 return null;
             }
         } catch (Exception ex) {
+            log.log(Level.SEVERE, ex.getMessage());
             return null;
+        } finally {
+            try {
+                Files.deleteIfExists(path);
+                Files.delete(path);
+            } catch (IOException ex) {
+                log.log(Level.SEVERE, wsqBase64String);
+            }
+
         }
+
         return wsqBase64String;
     }
 
