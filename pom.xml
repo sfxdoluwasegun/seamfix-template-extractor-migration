@@ -4,7 +4,7 @@
         
     <groupId>com.sf.plugins</groupId>
     <artifactId>template-extractor</artifactId>
-    <version>1.0.0-SNAPSHOT</version>
+    <version>1.0.1-SNAPSHOT</version>
     <name>Biometric Template Extractor</name>
     <description>Plugin project which allows Seamfix applications extract templates from images for biometric purposes</description>
 
@@ -43,12 +43,6 @@
             <groupId>com.neurotec</groupId>
             <artifactId>neurotec-cluster</artifactId>
             <version>10.0.0.0</version>
-            <scope>provided</scope>
-        </dependency>
-        <dependency>
-            <groupId>com.neurotec</groupId>
-            <artifactId>neurotec-devices-virtual</artifactId>
-            <version>10.0.0.0</version> 
             <scope>provided</scope>
         </dependency>
         <dependency>

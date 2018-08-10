@@ -15,6 +15,9 @@ import com.neurotec.io.NBuffer;
 import com.sf.plugins.template.extractor.enums.BiometricType;
 import com.sf.plugins.template.extractor.enums.ResponseCodeEnum;
 import com.sf.plugins.template.extractor.pojos.ExtractResponse;
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
 import java.util.Base64;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -32,11 +35,11 @@ public class Extractor implements IExtractor {
         //validate inputs
         ExtractResponse response = new ExtractResponse(ResponseCodeEnum.ERROR);
         if (base64ImageString == null || biometricType == null) {
-            log.log(Level.SEVERE, ResponseCodeEnum.INVALID_INPUT.getDescription()+" : Invalid image or Biomtric Type ");
+            log.log(Level.SEVERE, ResponseCodeEnum.INVALID_INPUT.getDescription() + " : Invalid image or Biomtric Type ");
             return new ExtractResponse(ResponseCodeEnum.INVALID_INPUT);
         }
         if (BiometricType.from(biometricType) == BiometricType.FINGER) {
-             log.info("Beginning Finger Image Template Extraction");
+            log.info("Beginning Finger Image Template Extraction");
             byte[] templateByte = extractFingerTemplate(biometricType, null, base64ImageString, client);
             if (templateByte != null) {
                 response = new ExtractResponse(ResponseCodeEnum.SUCCESS);
@@ -73,4 +76,43 @@ public class Extractor implements IExtractor {
         }
         return templateByte;
     }
+
+    public String toWsq(String base64ImageString) {
+        String wsqBase64String = null;
+        Path path = null;
+        try {
+            String bmpStr = base64ImageString.replaceAll("\\s+", "");
+            byte[] bmpBytes = Base64.getDecoder().decode(bmpStr);
+            NImage image = null;
+            WSQInfo info = null;
+            image = NImage.fromMemory(new NBuffer(bmpBytes));
+            info = (WSQInfo) NImageFormat.getWSQ().createInfo(image);
+            float bitrate = WSQInfo.DEFAULT_BIT_RATE;
+            info.setBitRate(bitrate);
+            path = Files.createTempFile("fingerprint", ".wsq");
+            String pat = path.toString();
+            image.save(pat, info);
+
+            byte[] wsqByte = Files.readAllBytes(path);
+            wsqBase64String = Base64.getEncoder().encodeToString(wsqByte);
+            if (wsqBase64String == null || wsqBase64String.trim().isEmpty()) {
+                return null;
+            }
+
+        } catch (Exception ex) {
+            log.log(Level.SEVERE, ex.getMessage());
+            return null;
+        } finally {
+            try {
+                Files.delete(path);
+                Files.deleteIfExists(path);
+            } catch (IOException ex) {
+                log.log(Level.SEVERE, ex.getMessage());
+            }
+
+        }
+
+        return wsqBase64String;
+    }
+
 }
