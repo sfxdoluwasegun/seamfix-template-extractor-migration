@@ -92,7 +92,7 @@ public class Extractor implements IExtractor {
             path = Files.createTempFile("fingerprint", ".wsq");
             String pat = path.toString();
             image.save(pat, info);
-          
+
             byte[] wsqByte = Files.readAllBytes(path);
             wsqBase64String = Base64.getEncoder().encodeToString(wsqByte);
             if (wsqBase64String == null || wsqBase64String.trim().isEmpty()) {
@@ -102,11 +102,10 @@ public class Extractor implements IExtractor {
         } catch (Exception ex) {
             log.log(Level.SEVERE, ex.getMessage());
             return null;
-        }
-        finally {
+        } finally {
             try {
-                Files.deleteIfExists(path);
                 Files.delete(path);
+                Files.deleteIfExists(path);
             } catch (IOException ex) {
                 log.log(Level.SEVERE, ex.getMessage());
             }
