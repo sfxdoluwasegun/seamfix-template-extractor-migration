@@ -106,7 +106,6 @@ public class Extractor implements IExtractor {
             return null;
         } finally {
             try {
-                Files.delete(path);
                 Files.deleteIfExists(path);
             } catch (IOException ex) {
                 log.log(Level.SEVERE, ex.getMessage());
