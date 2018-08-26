@@ -4,7 +4,7 @@
         
     <groupId>com.sf.plugins</groupId>
     <artifactId>template-extractor</artifactId>
-    <version>1.0.0-SNAPSHOT</version>
+    <version>1.0.2-SNAPSHOT</version>
     <name>Biometric Template Extractor</name>
     <description>Plugin project which allows Seamfix applications extract templates from images for biometric purposes</description>
 
@@ -81,6 +81,13 @@
             <version>10.0.0.0</version>
             <scope>provided</scope>
         </dependency>
+        <!-- https://mvnrepository.com/artifact/com.github.mhshams/jnbis -->
+        <dependency>
+            <groupId>com.github.mhshams</groupId>
+            <artifactId>jnbis</artifactId>
+            <version>2.0.1</version>
+        </dependency>
+
     </dependencies>
 
     <build>

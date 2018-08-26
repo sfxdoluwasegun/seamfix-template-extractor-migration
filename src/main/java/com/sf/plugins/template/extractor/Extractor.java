@@ -15,12 +15,14 @@ import com.neurotec.io.NBuffer;
 import com.sf.plugins.template.extractor.enums.BiometricType;
 import com.sf.plugins.template.extractor.enums.ResponseCodeEnum;
 import com.sf.plugins.template.extractor.pojos.ExtractResponse;
+import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.Base64;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import org.jnbis.api.Jnbis;
 
 /**
  *
@@ -92,7 +94,7 @@ public class Extractor implements IExtractor {
             path = Files.createTempFile("fingerprint", ".wsq");
             String pat = path.toString();
             image.save(pat, info);
-          
+
             byte[] wsqByte = Files.readAllBytes(path);
             wsqBase64String = Base64.getEncoder().encodeToString(wsqByte);
             if (wsqBase64String == null || wsqBase64String.trim().isEmpty()) {
@@ -102,11 +104,10 @@ public class Extractor implements IExtractor {
         } catch (Exception ex) {
             log.log(Level.SEVERE, ex.getMessage());
             return null;
-        }
-        finally {
+        } finally {
             try {
-                Files.deleteIfExists(path);
                 Files.delete(path);
+                Files.deleteIfExists(path);
             } catch (IOException ex) {
                 log.log(Level.SEVERE, ex.getMessage());
             }
@@ -114,6 +115,15 @@ public class Extractor implements IExtractor {
         }
 
         return wsqBase64String;
+    }
+
+    public String wsqToBmp(String base64WsqString) {
+        String base64BmpString = null;
+        byte[] bmpBytes = Jnbis.wsq()
+                .decode(Base64.getDecoder().decode(base64WsqString)).asBitmap().getPixels();
+        base64BmpString = Base64.getEncoder().encodeToString(bmpBytes);
+        return base64BmpString;
+
     }
 
 }
