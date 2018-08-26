@@ -15,12 +15,14 @@ import com.neurotec.io.NBuffer;
 import com.sf.plugins.template.extractor.enums.BiometricType;
 import com.sf.plugins.template.extractor.enums.ResponseCodeEnum;
 import com.sf.plugins.template.extractor.pojos.ExtractResponse;
+import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.Base64;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import org.jnbis.api.Jnbis;
 
 /**
  *
@@ -113,6 +115,15 @@ public class Extractor implements IExtractor {
         }
 
         return wsqBase64String;
+    }
+
+    public String wsqToBmp(String base64WsqString) {
+        String base64BmpString = null;
+        byte[] bmpBytes = Jnbis.wsq()
+                .decode(Base64.getDecoder().decode(base64WsqString)).asBitmap().getPixels();
+        base64BmpString = Base64.getEncoder().encodeToString(bmpBytes);
+        return base64BmpString;
+
     }
 
 }
