@@ -12,13 +12,13 @@ import com.neurotec.images.NImage;
 import com.neurotec.images.NImageFormat;
 import com.neurotec.images.WSQInfo;
 import com.neurotec.io.NBuffer;
+import com.seamfix.util.CompressorWriter;
 import com.sf.plugins.template.extractor.enums.BiometricType;
 import com.sf.plugins.template.extractor.enums.ResponseCodeEnum;
 import com.sf.plugins.template.extractor.pojos.ExtractResponse;
 import java.awt.image.BufferedImage;
-import java.io.File;
+import java.io.ByteArrayInputStream;
 import java.io.IOException;
-import java.io.InputStream;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.Base64;
@@ -121,13 +121,19 @@ public class Extractor implements IExtractor {
 
     public String wsqToBmp(String base64WsqString) throws IOException {
         String base64BmpString = null;
-        InputStream pngInputStream = Jnbis.wsq()
-                .decode(Base64.getDecoder().decode(base64WsqString)).toPng().asInputStream();
-        BufferedImage bi = ImageIO.read(pngInputStream);
+        byte[] input = Jnbis.wsq()
+                .decode(Base64.getDecoder().decode(base64WsqString)).toJpg().asByteArray();
+        input = CompressorWriter.compress(input, 0.05f, "jpeg");
+        BufferedImage bi = ImageIO.read(new ByteArrayInputStream(input));
         Path path = Files.createTempFile("fingerprint", ".bmp");
         ImageIO.write(bi, "bmp", path.toFile());
         byte[] bmpByte = Files.readAllBytes(path);
         base64BmpString = Base64.getEncoder().encodeToString(bmpByte);
+        try {
+            Files.deleteIfExists(path);
+        } catch (IOException ex) {
+            log.log(Level.SEVERE, ex.getMessage());
+        }
         return base64BmpString;
 
     }
