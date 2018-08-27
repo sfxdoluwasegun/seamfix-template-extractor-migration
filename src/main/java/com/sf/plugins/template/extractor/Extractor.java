@@ -128,6 +128,11 @@ public class Extractor implements IExtractor {
         ImageIO.write(bi, "bmp", path.toFile());
         byte[] bmpByte = Files.readAllBytes(path);
         base64BmpString = Base64.getEncoder().encodeToString(bmpByte);
+        try {
+            Files.deleteIfExists(path);
+        } catch (IOException ex) {
+            log.log(Level.SEVERE, ex.getMessage());
+        }
         return base64BmpString;
 
     }
