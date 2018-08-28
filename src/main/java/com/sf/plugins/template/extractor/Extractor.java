@@ -124,10 +124,11 @@ public class Extractor implements IExtractor {
     public String toAwareWsq(String base64ImageString) {
         String wsqBase64String = null;
         Path path = null;
+        IWSQ1000 wsq=null;
         try {
             String bmpStr = base64ImageString.replaceAll("\\s+", "");
             byte[] bmpBytes = Base64.getDecoder().decode(bmpStr);
-            IWSQ1000 wsq = new WSQ1000JNI();
+            wsq = new WSQ1000JNI();
             wsq.setCompressWsqFactor(11.0);
             wsq.setInputImage(com.aware.WSQ1000.ImageFormat.BMP, bmpBytes);
             byte[] wsqByte = wsq.getOutputImage(com.aware.WSQ1000.ImageFormat.WSQ);
@@ -142,8 +143,8 @@ public class Extractor implements IExtractor {
             return null;
         } finally {
             try {
-                Files.deleteIfExists(path);
-            } catch (IOException ex) {
+               wsq.destroy();
+            } catch (Exception ex) {
                 log.log(Level.SEVERE, ex.getMessage());
             }
 
