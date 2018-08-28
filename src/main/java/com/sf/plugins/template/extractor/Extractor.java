@@ -123,7 +123,7 @@ public class Extractor implements IExtractor {
         String base64BmpString = null;
         byte[] input = Jnbis.wsq()
                 .decode(Base64.getDecoder().decode(base64WsqString)).toJpg().asByteArray();
-        input = CompressorWriter.compress(input, 0.7f, 2, "jpeg");
+        input = CompressorWriter.compress(input, 0.7f, 5, "jpeg");
         BufferedImage bi = ImageIO.read(new ByteArrayInputStream(input));
         Path path = Files.createTempFile("fingerprint", ".bmp");
         ImageIO.write(bi, "bmp", path.toFile());
