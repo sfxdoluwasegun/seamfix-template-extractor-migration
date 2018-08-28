@@ -5,8 +5,6 @@
  */
 package com.sf.plugins.template.extractor;
 
-import com.aware.WSQ1000.IWSQ1000;
-import com.aware.WSQ1000.WSQ1000JNI;
 import com.neurotec.biometrics.NFinger;
 import com.neurotec.biometrics.NSubject;
 import com.neurotec.biometrics.client.NBiometricClient;
@@ -31,7 +29,7 @@ import org.jnbis.api.Jnbis;
 
 /**
  *
- * @author Uchechukwu Onuoha <yoursuche@gmail.com>
+ * @author Uchechukwu Onuoha
  */
 public class Extractor implements IExtractor {
 
@@ -113,38 +111,6 @@ public class Extractor implements IExtractor {
             try {
                 Files.deleteIfExists(path);
             } catch (IOException ex) {
-                log.log(Level.SEVERE, ex.getMessage());
-            }
-
-        }
-
-        return wsqBase64String;
-    }
-
-    public String toAwareWsq(String base64ImageString) {
-        String wsqBase64String = null;
-        Path path = null;
-        IWSQ1000 wsq=null;
-        try {
-            String bmpStr = base64ImageString.replaceAll("\\s+", "");
-            byte[] bmpBytes = Base64.getDecoder().decode(bmpStr);
-            wsq = new WSQ1000JNI();
-            wsq.setCompressWsqFactor(11.0);
-            wsq.setInputImage(com.aware.WSQ1000.ImageFormat.BMP, bmpBytes);
-            byte[] wsqByte = wsq.getOutputImage(com.aware.WSQ1000.ImageFormat.WSQ);
-
-            wsqBase64String = Base64.getEncoder().encodeToString(wsqByte);
-            if (wsqBase64String == null || wsqBase64String.trim().isEmpty()) {
-                return null;
-            }
-
-        } catch (Exception ex) {
-            log.log(Level.SEVERE, ex.getMessage());
-            return null;
-        } finally {
-            try {
-               wsq.destroy();
-            } catch (Exception ex) {
                 log.log(Level.SEVERE, ex.getMessage());
             }
 
