@@ -7,6 +7,7 @@ package com.sf.plugins.template.extractor;
 
 import com.neurotec.biometrics.client.NBiometricClient;
 import com.sf.plugins.template.extractor.pojos.ExtractResponse;
+import com.sf.plugins.template.extractor.pojos.ImageExtension;
 
 /**
  *
@@ -14,6 +15,6 @@ import com.sf.plugins.template.extractor.pojos.ExtractResponse;
  */
 public interface IExtractor {
 
-    public ExtractResponse extract(String biometricType, String imageExtension, String base64ImageString, NBiometricClient client);
+    public ExtractResponse extract(String biometricType, ImageExtension imageExtension, String base64ImageString, NBiometricClient client);
 
 }
