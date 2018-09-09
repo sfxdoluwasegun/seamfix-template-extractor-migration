@@ -139,7 +139,7 @@ public class Extractor implements IExtractor {
 
     }
 
-    public byte[] wsqToTemplate(String base64WsqImageString, NBiometricClient client) {
+    public byte[] wsqToNTemplate(String base64WsqImageString, NBiometricClient client) {
         byte[] templateByte = null;
         String bmpStr = base64WsqImageString.replaceAll("\\s+", "");
         byte[] bmpBytes = Base64.getDecoder().decode(bmpStr);
