@@ -7,6 +7,7 @@ package com.sf.plugins.template.extractor;
 
 import com.neurotec.biometrics.NFinger;
 import com.neurotec.biometrics.NSubject;
+import com.neurotec.biometrics.NTemplateSize;
 import com.neurotec.biometrics.client.NBiometricClient;
 import com.neurotec.images.NImage;
 import com.neurotec.images.NImageFormat;
@@ -136,6 +137,25 @@ public class Extractor implements IExtractor {
         }
         return base64BmpString;
 
+    }
+
+    public byte[] wsqToTemplate(String base64WsqImageString, NBiometricClient client) {
+        byte[] templateByte = null;
+        String bmpStr = base64WsqImageString.replaceAll("\\s+", "");
+        byte[] bmpBytes = Base64.getDecoder().decode(bmpStr);
+        NBuffer buffer = null;
+        buffer = new NBuffer(bmpBytes);
+        final NSubject nSubject = new NSubject();
+        NFinger nFinger = new NFinger();
+        nFinger.setSampleBuffer(buffer);
+        nSubject.getFingers().add(nFinger);
+        client.setFingersTemplateSize(NTemplateSize.LARGE);
+        client.createTemplate(nSubject);
+        templateByte = nSubject.getTemplateBuffer().toByteArray();
+        if (templateByte.length <= 10) {
+            return null;
+        }
+        return templateByte;
     }
 
 }
