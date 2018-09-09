@@ -26,6 +26,8 @@ import java.util.Base64;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.imageio.ImageIO;
+
+import com.sf.plugins.template.extractor.pojos.ImageExtension;
 import org.jnbis.api.Jnbis;
 
 /**
@@ -37,7 +39,7 @@ public class Extractor implements IExtractor {
     private static final Logger log = Logger.getLogger(Extractor.class.getName());
 
     @Override
-    public ExtractResponse extract(String biometricType, String imageExtension, String base64ImageString, NBiometricClient client) {
+    public ExtractResponse extract(String biometricType, ImageExtension imageExtension, String base64ImageString, NBiometricClient client) {
         //validate inputs
         ExtractResponse response = new ExtractResponse(ResponseCodeEnum.ERROR);
         if (base64ImageString == null || biometricType == null) {
@@ -46,7 +48,19 @@ public class Extractor implements IExtractor {
         }
         if (BiometricType.from(biometricType) == BiometricType.FINGER) {
             log.info("Beginning Finger Image Template Extraction");
-            byte[] templateByte = extractFingerTemplate(biometricType, null, base64ImageString, client);
+            byte[] templateByte = null;
+            switch (imageExtension){
+                case BMP:{
+                    log.info("USING BMP");
+                    templateByte = extractFingerTemplate(biometricType, null, base64ImageString, client);
+                    break;
+                }
+
+                case WSQ:{
+                    log.info("USING WSQ");
+                    templateByte = wsqToNTemplate(base64ImageString, client);
+                }
+            }
             if (templateByte != null) {
                 response = new ExtractResponse(ResponseCodeEnum.SUCCESS);
                 response.setTemplate(templateByte);
