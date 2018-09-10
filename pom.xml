@@ -4,7 +4,7 @@
         
     <groupId>com.sf.plugins</groupId>
     <artifactId>template-extractor</artifactId>
-    <version>1.0.3-SNAPSHOT</version>
+    <version>1.1.0-FINAL</version>
     <name>Biometric Template Extractor</name>
     <description>Plugin project which allows Seamfix applications extract templates from images for biometric purposes</description>
 
