@@ -17,6 +17,10 @@ import com.seamfix.util.CompressorWriter;
 import com.sf.plugins.template.extractor.enums.BiometricType;
 import com.sf.plugins.template.extractor.enums.ResponseCodeEnum;
 import com.sf.plugins.template.extractor.pojos.ExtractResponse;
+import com.sf.plugins.template.extractor.pojos.ImageExtension;
+import org.jnbis.api.Jnbis;
+
+import javax.imageio.ImageIO;
 import java.awt.image.BufferedImage;
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
@@ -25,10 +29,6 @@ import java.nio.file.Path;
 import java.util.Base64;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import javax.imageio.ImageIO;
-
-import com.sf.plugins.template.extractor.pojos.ImageExtension;
-import org.jnbis.api.Jnbis;
 
 /**
  *
@@ -109,7 +109,7 @@ public class Extractor implements IExtractor {
             info = (WSQInfo) NImageFormat.getWSQ().createInfo(image);
             float bitrate = WSQInfo.DEFAULT_BIT_RATE;
             info.setBitRate(bitrate);
-            path = Files.createTempFile("fingerprint", ".wsq");
+            path = Files.createTempFile("fingerprint"+System.nanoTime(), ".wsq");
             String pat = path.toString();
             image.save(pat, info);
 
@@ -125,7 +125,7 @@ public class Extractor implements IExtractor {
         } finally {
             try {
                 Files.deleteIfExists(path);
-            } catch (IOException ex) {
+            } catch (IOException | NullPointerException ex) {
                 log.log(Level.SEVERE, ex.getMessage());
             }
 
@@ -148,6 +148,8 @@ public class Extractor implements IExtractor {
             Files.deleteIfExists(path);
         } catch (IOException ex) {
             log.log(Level.SEVERE, ex.getMessage());
+
+
         }
         return base64BmpString;
 
